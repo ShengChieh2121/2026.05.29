@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome, SC Huang | Personal Portal</title>
+    <meta name="description"
+        content="A premium personalized landing page greeting for SC Huang, featuring modern design aesthetics, dynamic time-of-day greetings, and immersive glassmorphic UI elements.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Modern CSS Reset & Variable Definitions */
+        :root {
+            --bg-dark: #060813;
+            --card-bg: rgba(11, 15, 36, 0.45);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-gradient-1: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+            --accent-gradient-2: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --accent-gradient-3: linear-gradient(135deg, #b180ff 0%, #5700ff 100%);
+            --glow-color: rgba(99, 102, 241, 0.15);
+            --font-main: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, sans-serif;
+            --transition-smooth: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Ambient Glowing Background Blobs */
+        .ambient-glows {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .glow-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.35;
+            mix-blend-mode: screen;
+            animation: float-around 25s infinite alternate ease-in-out;
+            transition: var(--transition-smooth);
+        }
+
+        .blob-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #4f46e5 0%, transparent 70%);
+            top: -15%;
+            left: -10%;
+            animation-duration: 20s;
+        }
+
+        .blob-2 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, #ec4899 0%, transparent 70%);
+            bottom: -20%;
+            right: -10%;
+            animation-duration: 25s;
+        }
+
+        .blob-3 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #06b6d4 0%, transparent 70%);
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-duration: 30s;
+            opacity: 0.2;
+        }
+
+        @keyframes float-around {
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+
+            50% {
+                transform: translate(50px, 80px) scale(1.15) rotate(180deg);
+            }
+
+            100% {
+                transform: translate(-30px, -40px) scale(0.9) rotate(360deg);
+            }
+        }
+
+        /* Interactive Particle Overlay Canvas */
+        #interactive-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Glassmorphic Container */
+        .app-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 540px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 28px;
+            padding: 45px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: card-appear 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.1s;
+            transition: var(--transition-smooth);
+        }
+
+        .app-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 28px;
+            padding: 1.5px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .app-container:hover {
+            box-shadow: 0 35px 65px -10px rgba(0, 0, 0, 0.65),
+                0 0 50px var(--glow-color);
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+
+        @keyframes card-appear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Time & Date Display Badge */
+        .time-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+            transition: var(--transition-smooth);
+        }
+
+        .time-badge:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+        }
+
+        .time-badge .dot {
+            width: 6px;
+            height: 6px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 10px #10b981;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        /* Main Greeting Text */
+        .greeting-header {
+            margin-bottom: 24px;
+        }
+
+        .greeting-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -1.2px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff 40%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .greeting-name {
+            font-size: 3.6rem;
+            font-weight: 800;
+            display: block;
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #e879f9 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: text-gradient 6s linear infinite;
+        }
+
+        @keyframes text-gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .greeting-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 85%;
+            margin: 0 auto 35px auto;
+        }
+
+        /* Decorative Clock Section */
+        .clock-section {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .clock-section:hover {
+            background: rgba(255, 255, 255, 0.035);
+            border-color: rgba(255, 255, 255, 0.06);
+            transform: scale(1.02);
+        }
+
+        .clock-section::after {
+            content: 'Click to toggle 12h/24h';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translate(-50%, 15px);
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            opacity: 0;
+            transition: var(--transition-smooth);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .clock-section:hover::after {
+            transform: translate(-50%, 0);
+            opacity: 0.8;
+        }
+
+        .clock-time {
+            font-size: 2.4rem;
+            font-weight: 700;
+            font-feature-settings: "tnum";
+            font-variant-numeric: tabular-nums;
+            background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+            transition: var(--transition-smooth);
+        }
+
+        .clock-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+        }
+
+        .clock-section:hover .clock-time {
+            transform: translateY(-4px);
+        }
+
+        .clock-section:hover .clock-date {
+            transform: translateY(-2px);
+            opacity: 0.7;
+        }
+
+        /* Interactive Controls */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 16px 28px;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            outline: none;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 100%);
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+            border: none;
+            box-shadow: 0 10px 20px -10px rgba(99, 102, 241, 0.45);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 15px 25px -8px rgba(99, 102, 241, 0.65),
+                0 0 20px rgba(99, 102, 241, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.18);
+            transform: translateY(-3px);
+        }
+
+        /* Quotes/Inspiration display */
+        .inspiration-box {
+            margin-top: 0px;
+            padding-top: 0px;
+            border-top: 1px solid rgba(255, 255, 255, 0.0);
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .inspiration-box.active {
+            opacity: 1;
+            max-height: 160px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .inspiration-text {
+            font-style: italic;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .inspiration-author {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #818cf8;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        /* Footer styling */
+        footer {
+            margin-top: 35px;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.2);
+            letter-spacing: 0.5px;
+        }
+
+        footer a {
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        footer a:hover {
+            color: #818cf8;
+        }
+
+        /* Ripple effect container styles */
+        .ripple {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.35);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-animation 0.65s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive scaling */
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 35px 20px;
+            }
+
+            .greeting-title {
+                font-size: 2.2rem;
+            }
+
+            .greeting-name {
+                font-size: 2.8rem;
+            }
+
+            .clock-time {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Ambient Gradient Blobs -->
+    <div class="ambient-glows" aria-hidden="true">
+        <div class="glow-blob blob-1" id="glow-1"></div>
+        <div class="glow-blob blob-2" id="glow-2"></div>
+        <div class="glow-blob blob-3" id="glow-3"></div>
+    </div>
+
+    <!-- Interactive Canvas for Floating Particles -->
+    <canvas id="interactive-canvas"></canvas>
+
+    <!-- Main Container -->
+    <main class="app-container" id="greeting-card">
+        <!-- Interactive Badge -->
+        <div class="time-badge" id="greeting-badge">
+            <span class="dot"></span>
+            <span id="badge-text">Personal Portal</span>
+        </div>
+
+        <!-- Greeting Block -->
+        <div class="greeting-header">
+            <h1 class="greeting-title">
+                <span id="time-greeting">Hello,</span>
+                <span class="greeting-name">SC Huang</span>
+            </h1>
+            <p class="greeting-subtitle" id="greeting-sub">Have a wonderful and productive day ahead.</p>
+        </div>
+
+        <!-- Time & Date Widget -->
+        <section class="clock-section" aria-label="Current Date and Time">
+            <div class="clock-time" id="clock-display" role="timer">00:00:00</div>
+            <div class="clock-date" id="date-display">Date Loading...</div>
+        </section>
+
+        <!-- Action / Controls Area -->
+        <div class="controls">
+            <button class="btn btn-primary" id="btn-inspire" aria-controls="inspiration-panel">
+                <span>Spark Inspiration</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                </svg>
+            </button>
+            <button class="btn btn-secondary" id="btn-theme" aria-label="Cycle Theme Aura">
+                <span>Cycle Theme Aura</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 2a10 10 0 0 1 0 20V2Z" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Dynamic Inspiration Panel -->
+        <div class="inspiration-box" id="inspiration-panel" aria-live="polite">
+            <p class="inspiration-text" id="quote-text">"The only way to do great work is to love what you do."</p>
+            <span class="inspiration-author" id="quote-author">Steve Jobs</span>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <span>Crafted with &hearts; for SC Huang</span>
+        </footer>
+    </main>
+
+    <!-- JavaScript Interactive Functionality -->
+    <script>
+        // DOM Elements
+        const clockDisplay = document.getElementById('clock-display');
+        const dateDisplay = document.getElementById('date-display');
+        const timeGreeting = document.getElementById('time-greeting');
+        const greetingSub = document.getElementById('greeting-sub');
+        const badgeText = document.getElementById('badge-text');
+        const btnInspire = document.getElementById('btn-inspire');
+        const btnTheme = document.getElementById('btn-theme');
+        const inspirationPanel = document.getElementById('inspiration-panel');
+        const quoteText = document.getElementById('quote-text');
+        const quoteAuthor = document.getElementById('quote-author');
+        const glow1 = document.getElementById('glow-1');
+        const glow2 = document.getElementById('glow-2');
+        const glow3 = document.getElementById('glow-3');
+        const cardElement = document.getElementById('greeting-card');
+
+        // Theme Auroras
+        const themes = [
+            {
+                glow1: 'radial-gradient(circle, #4f46e5 0%, transparent 70%)',
+                glow2: 'radial-gradient(circle, #ec4899 0%, transparent 70%)',
+                glow3: 'radial-gradient(circle, #06b6d4 0%, transparent 70%)',
+                nameGradient: 'linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #e879f9 100%)',
+                glowShadow: 'rgba(99, 102, 241, 0.15)',
+                themeName: 'Original Aurora'
+            },
+            {
+                glow1: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)',
+                glow2: 'radial-gradient(circle, #ef4444 0%, transparent 70%)',
+                glow3: 'radial-gradient(circle, #ec4899 0%, transparent 70%)',
+                nameGradient: 'linear-gradient(135deg, #fbbf24 0%, #f87171 50%, #f472b6 100%)',
+                glowShadow: 'rgba(239, 68, 68, 0.15)',
+                themeName: 'Sunset Fire'
+            },
+            {
+                glow1: 'radial-gradient(circle, #10b981 0%, transparent 70%)',
+                glow2: 'radial-gradient(circle, #06b6d4 0%, transparent 70%)',
+                glow3: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)',
+                nameGradient: 'linear-gradient(135deg, #34d399 0%, #22d3ee 50%, #60a5fa 100%)',
+                glowShadow: 'rgba(16, 185, 129, 0.15)',
+                themeName: 'Forest Neo'
+            },
+            {
+                glow1: 'radial-gradient(circle, #8b5cf6 0%, transparent 70%)',
+                glow2: 'radial-gradient(circle, #ec4899 0%, transparent 70%)',
+                glow3: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)',
+                nameGradient: 'linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #93c5fd 100%)',
+                glowShadow: 'rgba(139, 92, 246, 0.15)',
+                themeName: 'Cyber Cosmic'
+            }
+        ];
+
+        let currentThemeIndex = 0;
+
+        // Dynamic Quotes Array
+        const quotes = [
+            { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+            { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+            { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+            { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+            { text: "Do not wait for opportunities, create them.", author: "Unknown" },
+            { text: "Your limit is only your imagination.", author: "Unknown" },
+            { text: "Act as if what you do makes a difference. It does.", author: "William James" },
+            { text: "In the middle of every difficulty lies opportunity.", author: "Albert Einstein" },
+            { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
+            { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+            { text: "The master has failed more times than the beginner has even tried.", author: "Stephen McCranie" }
+        ];
+
+        // 1. Time & Greeting Logic
+        let is24Hour = false;
+
+        // Add click listener to toggle time format
+        const clockSection = document.querySelector('.clock-section');
+        clockSection.addEventListener('click', (event) => {
+            is24Hour = !is24Hour;
+            updateDateTime();
+            createRipple(event);
+        });
+
+        function updateDateTime() {
+            const now = new Date();
+
+            // Format time
+            let hrs = now.getHours();
+            const mins = String(now.getMinutes()).padStart(2, '0');
+            const secs = String(now.getSeconds()).padStart(2, '0');
+
+            let timeString = '';
+            if (is24Hour) {
+                const displayHrs = String(hrs).padStart(2, '0');
+                timeString = `${displayHrs}:${mins}:${secs}`;
+            } else {
+                const ampm = hrs >= 12 ? 'PM' : 'AM';
+                const displayHrs = String(hrs % 12 || 12).padStart(2, '0');
+                timeString = `${displayHrs}:${mins}:${secs} ${ampm}`;
+            }
+            clockDisplay.textContent = timeString;
+
+            // Update page tab title to show ticking time dynamically
+            const tabHrs = is24Hour ? String(hrs).padStart(2, '0') : String(hrs % 12 || 12).padStart(2, '0');
+            const tabAmpm = is24Hour ? '' : ` ${now.getHours() >= 12 ? 'PM' : 'AM'}`;
+            document.title = `(${tabHrs}:${mins}${tabAmpm}) Welcome, SC Huang`;
+
+            // Format date beautifully
+            const dateOptions = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
+            dateDisplay.textContent = now.toLocaleDateString('en-US', dateOptions);
+
+            // Update greeting by time of day
+            const currentHour = now.getHours();
+            let greetingStr = "Hello,";
+            let subtextStr = "Have a wonderful and productive day ahead.";
+            let badgeStr = "Day Mode";
+
+            if (currentHour < 12) {
+                greetingStr = "Good morning,";
+                subtextStr = "Wishing you a fresh, energetic start to your day!";
+                badgeStr = "Morning Vibes";
+            } else if (currentHour < 17) {
+                greetingStr = "Good afternoon,";
+                subtextStr = "Keep maintaining the awesome momentum!";
+                badgeStr = "Afternoon Flow";
+            } else if (currentHour < 22) {
+                greetingStr = "Good evening,";
+                subtextStr = "Time to wind down and celebrate your day's achievements.";
+                badgeStr = "Evening Rest";
+            } else {
+                greetingStr = "Good night,";
+                subtextStr = "Rest well and recharge for tomorrow's bright opportunities.";
+                badgeStr = "Night Mode";
+            }
+
+            timeGreeting.textContent = greetingStr;
+            greetingSub.textContent = subtextStr;
+            // Update badge text only if not currently showcasing the theme
+            if (!badgeText.classList.contains('showing-theme')) {
+                badgeText.textContent = badgeStr;
+            }
+        }
+
+        // Run clock immediately and then every second
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // 2. Interactive Inspiration Action
+        btnInspire.addEventListener('click', (event) => {
+            // Pick a random quote distinct from current
+            let currentQuoteText = quoteText.textContent;
+            let filteredQuotes = quotes.filter(q => `"${q.text}"` !== currentQuoteText);
+            let selectedQuote = filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)];
+
+            if (inspirationPanel.classList.contains('active')) {
+                // Smooth transition fade-out and fade-in
+                inspirationPanel.style.opacity = '0';
+                setTimeout(() => {
+                    quoteText.textContent = `"${selectedQuote.text}"`;
+                    quoteAuthor.textContent = selectedQuote.author;
+                    inspirationPanel.style.opacity = '1';
+                }, 300);
+            } else {
+                quoteText.textContent = `"${selectedQuote.text}"`;
+                quoteAuthor.textContent = selectedQuote.author;
+                inspirationPanel.classList.add('active');
+                btnInspire.querySelector('span').textContent = 'Another Spark';
+            }
+
+            // Create colorful splash click effect on button
+            createRipple(event);
+        });
+
+        // Button Ripple Animation Helper
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const circle = document.createElement("span");
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
+            circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
+            circle.classList.add("ripple");
+
+            button.appendChild(circle);
+
+            setTimeout(() => circle.remove(), 650);
+        }
+
+        // 3. Ambient Theme Cycling Aura
+        btnTheme.addEventListener('click', (event) => {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const theme = themes[currentThemeIndex];
+
+            // Apply new ambient gradient properties
+            glow1.style.background = theme.glow1;
+            glow2.style.background = theme.glow2;
+            glow3.style.background = theme.glow3;
+
+            // Apply text gradient style updates
+            const nameEl = document.querySelector('.greeting-name');
+            nameEl.style.background = theme.nameGradient;
+            nameEl.style.webkitBackgroundClip = 'text';
+            nameEl.style.webkitTextFillColor = 'transparent';
+
+            // Apply shadow glow update
+            cardElement.style.setProperty('--glow-color', theme.glowShadow);
+
+            // Display Theme Badge Notification temporarily
+            badgeText.classList.add('showing-theme');
+            badgeText.textContent = `Aura: ${theme.themeName}`;
+            setTimeout(() => {
+                badgeText.classList.remove('showing-theme');
+                updateDateTime(); // Restore clock badge string
+            }, 2500);
+
+            createRipple(event);
+        });
+
+        // 4. Interactive Particle Canvas Setup
+        const canvas = document.getElementById('interactive-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+        const maxParticles = 50;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = Math.random() * 0.3 - 0.15;
+                this.speedY = Math.random() * 0.3 - 0.15;
+                this.opacity = Math.random() * 0.4 + 0.1;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Loop borders
+                if (this.x > canvas.width) this.x = 0;
+                else if (this.x < 0) this.x = canvas.width;
+
+                if (this.y > canvas.height) this.y = 0;
+                else if (this.y < 0) this.y = canvas.height;
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Initialize particles
+        for (let i = 0; i < maxParticles; i++) {
+            particles.push(new Particle());
+        }
+
+        // Animation Loop
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+    </script>
+</body>
+
+</html>
